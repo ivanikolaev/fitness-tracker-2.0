@@ -1,0 +1,160 @@
+/* Header styles */
+.app-header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.logo h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #4a86e8;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.login-button,
+.register-button,
+.user-button {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+        background-color 0.2s,
+        color 0.2s;
+    border: none;
+}
+
+.login-button {
+    background-color: transparent;
+    border: 1px solid #4a86e8;
+    color: #4a86e8;
+}
+
+.login-button:hover {
+    background-color: rgba(74, 134, 232, 0.1);
+}
+
+.register-button {
+    background-color: #4a86e8;
+    color: white;
+}
+
+.register-button:hover {
+    background-color: #3a76d8;
+}
+
+.user-button {
+    background-color: transparent;
+    border: 1px solid #4a86e8;
+    color: #4a86e8;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.user-button:hover {
+    background-color: rgba(74, 134, 232, 0.1);
+}
+
+.user-menu {
+    position: relative;
+}
+
+.menu-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-width: 150px;
+    z-index: 10;
+}
+
+.menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.menu-item:hover {
+    background-color: #f5f5f5;
+}
+
+/* Accessibility styles */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #4a86e8;
+    color: white;
+    padding: 8px;
+    z-index: 100;
+    transition: top 0.3s;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: none;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+    .login-button,
+    .register-button,
+    .user-button {
+        border: 1px solid;
+    }
+}

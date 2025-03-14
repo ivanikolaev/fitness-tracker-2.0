@@ -1,0 +1,384 @@
+.workout-detail-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.workout-detail-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.header-content {
+    flex: 1;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    color: #666;
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.back-link:hover {
+    color: #4a7dfc;
+}
+
+.workout-detail-header h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 0.5rem;
+}
+
+.workout-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.workout-status {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.workout-status.completed {
+    background-color: #e6f7ee;
+    color: #0d904b;
+}
+
+.workout-status.upcoming {
+    background-color: #e6f0ff;
+    color: #4a7dfc;
+}
+
+.workout-description {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #666;
+    line-height: 1.5;
+    max-width: 600px;
+}
+
+.workout-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+}
+
+.complete-workout-btn,
+.edit-workout-btn,
+.delete-workout-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    min-width: 160px;
+}
+
+.complete-workout-btn {
+    background-color: #4a7dfc;
+    color: white;
+    border: none;
+}
+
+.complete-workout-btn:hover:not(:disabled) {
+    background-color: #3a6eec;
+}
+
+.complete-workout-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.edit-workout-btn {
+    background-color: #f5f5f5;
+    color: #333;
+    text-decoration: none;
+    border: 1px solid #e0e0e0;
+}
+
+.edit-workout-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.delete-workout-btn {
+    background-color: white;
+    color: #e53935;
+    border: 1px solid #e53935;
+}
+
+.delete-workout-btn:hover {
+    background-color: #ffebee;
+}
+
+.workout-exercises h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 1.5rem;
+}
+
+.empty-exercises {
+    padding: 2rem;
+    text-align: center;
+    color: #666;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.exercises-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.exercise-card {
+    padding: 1.5rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.exercise-name {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.exercise-status {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: #f5f5f5;
+    color: #666;
+}
+
+.exercise-status.completed {
+    background-color: #e6f7ee;
+    color: #0d904b;
+}
+
+.exercise-notes {
+    margin: 0 0 1rem;
+    font-size: 0.875rem;
+    color: #666;
+    line-height: 1.5;
+    padding: 0.75rem;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.exercise-details {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.exercise-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info-label {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.info-value {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.exercise-sets h4 {
+    margin: 0 0 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.sets-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sets-table th,
+.sets-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 0.875rem;
+}
+
+.sets-table th {
+    font-weight: 600;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+.sets-table tr.completed {
+    background-color: #f9fff9;
+}
+
+.set-status {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.set-status.completed {
+    background-color: #e6f7ee;
+    color: #0d904b;
+}
+
+.set-status.pending {
+    background-color: #f5f5f5;
+    color: #666;
+}
+
+/* Delete Confirmation Modal */
+.delete-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.delete-modal {
+    background-color: white;
+    border-radius: 8px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.delete-modal h3 {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.delete-modal p {
+    margin: 0 0 1.5rem;
+    font-size: 0.875rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.cancel-btn,
+.delete-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.cancel-btn {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #e0e0e0;
+}
+
+.cancel-btn:hover:not(:disabled) {
+    background-color: #e0e0e0;
+}
+
+.delete-btn {
+    background-color: #e53935;
+    color: white;
+    border: none;
+}
+
+.delete-btn:hover:not(:disabled) {
+    background-color: #d32f2f;
+}
+
+.cancel-btn:disabled,
+.delete-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Loading and Error States */
+.loading-state,
+.error-state,
+.not-found-state {
+    padding: 3rem;
+    text-align: center;
+    color: #666;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .workout-detail-header {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .workout-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 0.75rem;
+    }
+
+    .complete-workout-btn,
+    .edit-workout-btn,
+    .delete-workout-btn {
+        min-width: auto;
+    }
+
+    .exercise-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .exercise-details {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .sets-table {
+        display: block;
+        overflow-x: auto;
+    }
+}

@@ -1,0 +1,280 @@
+.exercises-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.exercises-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.exercises-header h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 0.5rem;
+}
+
+.exercises-subtitle {
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+}
+
+.filters-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.search-form {
+    display: flex;
+    margin-bottom: 1.5rem;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px 0 0 4px;
+    font-size: 1rem;
+}
+
+.search-form input:focus {
+    outline: none;
+}
+
+.search-btn {
+    padding: 0.75rem 1.5rem;
+    background-color: #4a7dfc;
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.search-btn:hover {
+    background-color: #3a6eec;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 1rem;
+}
+
+.filter-group {
+    flex: 1;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.filter-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: white;
+    cursor: pointer;
+}
+
+.filter-group select:focus {
+    outline: none;
+}
+
+.exercises-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.exercise-card {
+    padding: 1.5rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+}
+
+.exercise-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.exercise-header {
+    margin-bottom: 1rem;
+}
+
+.exercise-name {
+    margin: 0 0 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.exercise-tags {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.exercise-type,
+.muscle-group {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.exercise-type {
+    background-color: #e6f0ff;
+    color: #4a7dfc;
+}
+
+.muscle-group {
+    background-color: #f5f5f5;
+    color: #666;
+}
+
+.exercise-image {
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.exercise-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.exercise-description {
+    margin: 0 0 1rem;
+    font-size: 0.875rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+.exercise-instructions {
+    margin-bottom: 1rem;
+}
+
+.exercise-instructions h4 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.exercise-instructions p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+.video-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #f5f5f5;
+    color: #333;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: background-color 0.2s;
+}
+
+.video-link:hover {
+    background-color: #e0e0e0;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pagination-btn {
+    padding: 0.5rem 1rem;
+    background-color: #f5f5f5;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background-color: #e0e0e0;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.loading-state,
+.error-state,
+.empty-state {
+    padding: 3rem;
+    text-align: center;
+    color: #666;
+}
+
+.clear-filters-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #f5f5f5;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.clear-filters-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .filter-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .search-form {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .search-form input {
+        border-radius: 4px;
+    }
+
+    .search-btn {
+        border-radius: 4px;
+    }
+
+    .exercises-grid {
+        grid-template-columns: 1fr;
+    }
+}
