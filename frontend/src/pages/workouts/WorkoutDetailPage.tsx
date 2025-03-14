@@ -4,7 +4,9 @@ import {
     useGetWorkoutQuery,
     useCompleteWorkoutMutation,
     useDeleteWorkoutMutation,
+    useReopenWorkoutMutation,
 } from '../../api/workoutsApiSlice';
+import { translateMuscleGroup, translateExerciseType } from '../../utils/translations';
 import './WorkoutDetailPage.css';
 
 const WorkoutDetailPage = () => {
@@ -17,6 +19,7 @@ const WorkoutDetailPage = () => {
 
     // Mutations
     const [completeWorkout, { isLoading: isCompletingWorkout }] = useCompleteWorkoutMutation();
+    const [reopenWorkout, { isLoading: isReopeningWorkout }] = useReopenWorkoutMutation();
     const [deleteWorkout, { isLoading: isDeletingWorkout }] = useDeleteWorkoutMutation();
 
     // Extract workout from response data
@@ -29,7 +32,18 @@ const WorkoutDetailPage = () => {
         try {
             await completeWorkout(id).unwrap();
         } catch (err) {
-            console.error('Failed to complete workout:', err);
+            // Handle error silently
+        }
+    };
+
+    // Handle reopen workout
+    const handleReopenWorkout = async () => {
+        if (!id) return;
+
+        try {
+            await reopenWorkout(id).unwrap();
+        } catch (err) {
+            // Handle error silently
         }
     };
 
@@ -41,20 +55,20 @@ const WorkoutDetailPage = () => {
             await deleteWorkout(id).unwrap();
             navigate('/workouts');
         } catch (err) {
-            console.error('Failed to delete workout:', err);
+            // Handle error silently
         }
     };
 
     if (isLoading) {
-        return <div className="loading-state">Loading workout details...</div>;
+        return <div className="loading-state">Загрузка данных тренировки...</div>;
     }
 
     if (isError) {
         return (
             <div className="error-state">
-                <p>Error loading workout details.</p>
+                <p>Ошибка при загрузке данных тренировки.</p>
                 <Link to="/workouts" className="back-link">
-                    Back to Workouts
+                    Вернуться к тренировкам
                 </Link>
             </div>
         );
@@ -63,9 +77,9 @@ const WorkoutDetailPage = () => {
     if (!workout) {
         return (
             <div className="not-found-state">
-                <p>Workout not found.</p>
+                <p>Тренировка не найдена.</p>
                 <Link to="/workouts" className="back-link">
-                    Back to Workouts
+                    Вернуться к тренировкам
                 </Link>
             </div>
         );
@@ -76,18 +90,18 @@ const WorkoutDetailPage = () => {
             <div className="workout-detail-header">
                 <div className="header-content">
                     <Link to="/workouts" className="back-link">
-                        ← Back to Workouts
+                        ← Назад к тренировкам
                     </Link>
                     <h1>{workout.name}</h1>
                     <div className="workout-meta">
                         <span className="workout-date">
                             {new Date(workout.scheduledDate).toLocaleDateString()}
                         </span>
-                        <span className="workout-duration">{workout.duration} min</span>
+                        <span className="workout-duration">{workout.duration} мин</span>
                         <span
                             className={`workout-status ${workout.isCompleted ? 'completed' : 'upcoming'}`}
                         >
-                            {workout.isCompleted ? 'Completed' : 'Upcoming'}
+                            {workout.isCompleted ? 'Завершена' : 'Предстоящая'}
                         </span>
                     </div>
                     {workout.description && (
@@ -96,34 +110,42 @@ const WorkoutDetailPage = () => {
                 </div>
 
                 <div className="workout-actions">
-                    {!workout.isCompleted && (
+                    {!workout.isCompleted ? (
                         <button
                             className="complete-workout-btn"
                             onClick={handleCompleteWorkout}
                             disabled={isCompletingWorkout}
                         >
-                            {isCompletingWorkout ? 'Completing...' : 'Mark as Completed'}
+                            {isCompletingWorkout ? 'Завершение...' : 'Отметить как завершенную'}
+                        </button>
+                    ) : (
+                        <button
+                            className="reopen-workout-btn"
+                            onClick={handleReopenWorkout}
+                            disabled={isReopeningWorkout}
+                        >
+                            {isReopeningWorkout ? 'Открытие...' : 'Открыть заново'}
                         </button>
                     )}
                     <Link to={`/workouts/${workout.id}/edit`} className="edit-workout-btn">
-                        Edit Workout
+                        Редактировать
                     </Link>
                     <button
                         className="delete-workout-btn"
                         onClick={() => setShowConfirmDelete(true)}
                     >
-                        Delete Workout
+                        Удалить
                     </button>
                 </div>
             </div>
 
             <div className="workout-exercises">
-                <h2>Exercises</h2>
+                <h2>Упражнения</h2>
                 {workout.workoutExercises.length === 0 ? (
-                    <p className="empty-exercises">No exercises added to this workout.</p>
+                    <p className="empty-exercises">К этой тренировке не добавлено упражнений.</p>
                 ) : (
                     <div className="exercises-list">
-                        {workout.workoutExercises
+                        {[...workout.workoutExercises]
                             .sort((a, b) => a.order - b.order)
                             .map(workoutExercise => (
                                 <div className="exercise-card" key={workoutExercise.id}>
@@ -134,7 +156,7 @@ const WorkoutDetailPage = () => {
                                         <span
                                             className={`exercise-status ${workoutExercise.isCompleted ? 'completed' : ''}`}
                                         >
-                                            {workoutExercise.isCompleted ? 'Completed' : 'Pending'}
+                                            {workoutExercise.isCompleted ? 'Выполнено' : 'В ожидании'}
                                         </span>
                                     </div>
 
@@ -144,35 +166,35 @@ const WorkoutDetailPage = () => {
 
                                     <div className="exercise-details">
                                         <div className="exercise-info">
-                                            <span className="info-label">Muscle Group:</span>
+                                            <span className="info-label">Группа мышц:</span>
                                             <span className="info-value">
-                                                {workoutExercise.exercise.primaryMuscleGroup}
+                                                {translateMuscleGroup(workoutExercise.exercise.primaryMuscleGroup)}
                                             </span>
                                         </div>
                                         <div className="exercise-info">
-                                            <span className="info-label">Type:</span>
+                                            <span className="info-label">Тип:</span>
                                             <span className="info-value">
-                                                {workoutExercise.exercise.type}
+                                                {translateExerciseType(workoutExercise.exercise.type)}
                                             </span>
                                         </div>
                                     </div>
 
                                     {workoutExercise.sets.length > 0 && (
                                         <div className="exercise-sets">
-                                            <h4>Sets</h4>
+                                            <h4>Подходы</h4>
                                             <table className="sets-table">
                                                 <thead>
                                                     <tr>
-                                                        <th>Set</th>
-                                                        <th>Weight</th>
-                                                        <th>Reps</th>
-                                                        <th>Duration</th>
-                                                        <th>Distance</th>
-                                                        <th>Status</th>
+                                                        <th>Подход</th>
+                                                        <th>Вес</th>
+                                                        <th>Повторения</th>
+                                                        <th>Длительность</th>
+                                                        <th>Дистанция</th>
+                                                        <th>Статус</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {workoutExercise.sets
+                                                    {[...workoutExercise.sets]
                                                         .sort((a, b) => a.setNumber - b.setNumber)
                                                         .map(set => (
                                                             <tr
@@ -186,18 +208,18 @@ const WorkoutDetailPage = () => {
                                                                 <td>{set.setNumber}</td>
                                                                 <td>
                                                                     {set.weight
-                                                                        ? `${set.weight} kg`
+                                                                        ? `${set.weight} кг`
                                                                         : '-'}
                                                                 </td>
                                                                 <td>{set.reps || '-'}</td>
                                                                 <td>
                                                                     {set.duration
-                                                                        ? `${set.duration} sec`
+                                                                        ? `${set.duration} сек`
                                                                         : '-'}
                                                                 </td>
                                                                 <td>
                                                                     {set.distance
-                                                                        ? `${set.distance} km`
+                                                                        ? `${set.distance} км`
                                                                         : '-'}
                                                                 </td>
                                                                 <td>
@@ -205,8 +227,8 @@ const WorkoutDetailPage = () => {
                                                                         className={`set-status ${set.isCompleted ? 'completed' : 'pending'}`}
                                                                     >
                                                                         {set.isCompleted
-                                                                            ? 'Completed'
-                                                                            : 'Pending'}
+                                                                            ? 'Выполнено'
+                                                                            : 'В ожидании'}
                                                                     </span>
                                                                 </td>
                                                             </tr>
@@ -225,10 +247,10 @@ const WorkoutDetailPage = () => {
             {showConfirmDelete && (
                 <div className="delete-modal-overlay">
                     <div className="delete-modal">
-                        <h3>Delete Workout</h3>
+                        <h3>Удаление тренировки</h3>
                         <p>
-                            Are you sure you want to delete this workout? This action cannot be
-                            undone.
+                            Вы уверены, что хотите удалить эту тренировку? Это действие нельзя
+                            отменить.
                         </p>
                         <div className="modal-actions">
                             <button
@@ -236,14 +258,14 @@ const WorkoutDetailPage = () => {
                                 onClick={() => setShowConfirmDelete(false)}
                                 disabled={isDeletingWorkout}
                             >
-                                Cancel
+                                Отмена
                             </button>
                             <button
                                 className="delete-btn"
                                 onClick={handleDeleteWorkout}
                                 disabled={isDeletingWorkout}
                             >
-                                {isDeletingWorkout ? 'Deleting...' : 'Delete'}
+                                {isDeletingWorkout ? 'Удаление...' : 'Удалить'}
                             </button>
                         </div>
                     </div>

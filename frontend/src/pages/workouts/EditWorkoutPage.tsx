@@ -1,11 +1,15 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useGetExercisesQuery } from '../../api/exercisesApiSlice';
-import { useCreateWorkoutMutation } from '../../api/workoutsApiSlice';
-import './CreateWorkoutPage.css';
+import { 
+    useGetWorkoutQuery, 
+    useUpdateWorkoutMutation,
+    WorkoutExercise 
+} from '../../api/workoutsApiSlice';
+import './CreateWorkoutPage.css'; // Reuse the same CSS
 
 // Define validation schema
 const workoutSchema = z.object({
@@ -18,18 +22,20 @@ const workoutSchema = z.object({
     workoutExercises: z
         .array(
             z.object({
+                id: z.string().optional(), // Existing workout exercise ID
                 exerciseId: z.string().min(1, 'Exercise is required'),
                 order: z.number(),
                 notes: z.string().optional(),
                 sets: z
                     .array(
                         z.object({
+                            id: z.string().optional(), // Existing set ID
                             setNumber: z.number(),
-                            weight: z.number().optional(),
-                            reps: z.number().optional(),
-                            duration: z.number().optional(),
-                            distance: z.number().optional(),
-                            notes: z.string().optional(),
+                            weight: z.number().optional().nullable(),
+                            reps: z.number().optional().nullable(),
+                            duration: z.number().optional().nullable(),
+                            distance: z.number().optional().nullable(),
+                            notes: z.string().optional().nullable(),
                         })
                     )
                     .optional(),
@@ -40,10 +46,19 @@ const workoutSchema = z.object({
 
 type WorkoutFormData = z.infer<typeof workoutSchema>;
 
-const CreateWorkoutPage = () => {
+const EditWorkoutPage = () => {
+    const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [selectedExerciseType, setSelectedExerciseType] = useState<string>('');
     const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>('');
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    // Fetch workout data
+    const { 
+        data: workoutData, 
+        isLoading: isLoadingWorkout, 
+        isError: isWorkoutError 
+    } = useGetWorkoutQuery(id || '');
 
     // Fetch exercises
     const { data: exercisesData, isLoading: isLoadingExercises } = useGetExercisesQuery({
@@ -51,8 +66,8 @@ const CreateWorkoutPage = () => {
         muscleGroup: selectedMuscleGroup || undefined,
     });
 
-    // Create workout mutation
-    const [createWorkout, { isLoading: isCreating }] = useCreateWorkoutMutation();
+    // Update workout mutation
+    const [updateWorkout, { isLoading: isUpdating }] = useUpdateWorkoutMutation();
 
     // Form setup
     const {
@@ -61,6 +76,7 @@ const CreateWorkoutPage = () => {
         formState: { errors },
         watch,
         setValue,
+        reset,
     } = useForm<WorkoutFormData>({
         resolver: zodResolver(workoutSchema),
         defaultValues: {
@@ -76,31 +92,96 @@ const CreateWorkoutPage = () => {
         fields: exerciseFields,
         append: appendExercise,
         remove: removeExercise,
+        replace: replaceExercises,
     } = useFieldArray({
         control,
         name: 'workoutExercises',
     });
 
+    // Load workout data into form when available
+    useEffect(() => {
+        if (workoutData && !isLoaded) {
+            const workout = workoutData.data.workout;
+            
+            // Format date to YYYY-MM-DD
+            const formattedDate = new Date(workout.scheduledDate)
+                .toISOString()
+                .split('T')[0];
+            
+            // Prepare workout exercises data
+            const formattedExercises = workout.workoutExercises.map((we: WorkoutExercise) => ({
+                id: we.id,
+                exerciseId: we.exerciseId,
+                order: we.order,
+                notes: we.notes || '',
+                sets: we.sets.map(set => ({
+                    id: set.id,
+                    setNumber: set.setNumber,
+                    weight: set.weight,
+                    reps: set.reps,
+                    duration: set.duration,
+                    distance: set.distance,
+                    notes: set.notes || '',
+                })),
+            }));
+            
+            // Reset form with workout data
+            reset({
+                name: workout.name,
+                description: workout.description || '',
+                scheduledDate: formattedDate,
+                workoutExercises: formattedExercises,
+            });
+            
+            setIsLoaded(true);
+        }
+    }, [workoutData, reset, isLoaded]);
+
     // Handle form submission
     const onSubmit = async (data: WorkoutFormData) => {
+        if (!id) return;
+        
         try {
             // Format workout exercises
             const formattedData = {
                 ...data,
-                workoutExercises: data.workoutExercises?.map((exercise, index) => ({
-                    ...exercise,
-                    order: index,
-                    sets: exercise.sets?.map((set, setIndex) => ({
-                        ...set,
-                        setNumber: setIndex + 1,
-                    })),
-                })),
+                // Ensure workoutExercises is always an array, even if empty
+                workoutExercises: data.workoutExercises?.length 
+                    ? data.workoutExercises.map((exercise, index) => ({
+                        ...exercise,
+                        order: index,
+                        sets: exercise.sets?.map((set, setIndex) => ({
+                            ...set,
+                            setNumber: setIndex + 1,
+                        })),
+                    }))
+                    : [] // Explicitly send an empty array if no exercises
             };
 
-            await createWorkout(formattedData).unwrap();
-            navigate('/workouts');
+            console.log('Submitting workout data:', formattedData);
+            
+            // Add a delay to ensure the console log is visible
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            const result = await updateWorkout({ 
+                id, 
+                workout: formattedData 
+            }).unwrap();
+            
+            console.log('Update workout result:', result);
+            
+            // Add a delay before navigation
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            navigate(`/workouts/${id}`);
         } catch (err) {
-            console.error('Failed to create workout:', err);
+            console.error('Failed to update workout:', err);
+            // Display the error in the console
+            if (err instanceof Error) {
+                console.error('Error details:', err.message);
+            } else {
+                console.error('Unknown error:', err);
+            }
         }
     };
 
@@ -159,13 +240,30 @@ const CreateWorkoutPage = () => {
         return date.toLocaleDateString();
     };
 
+    // Show loading state
+    if (isLoadingWorkout) {
+        return <div className="loading-state">Loading workout data...</div>;
+    }
+
+    // Show error state
+    if (isWorkoutError) {
+        return (
+            <div className="error-state">
+                <p>Error loading workout data.</p>
+                <Link to="/workouts" className="back-link">
+                    Back to Workouts
+                </Link>
+            </div>
+        );
+    }
+
     return (
         <div className="create-workout-page">
             <header className="create-workout-header">
-                <Link to="/workouts" className="back-link">
-                    ← Back to Workouts
+                <Link to={`/workouts/${id}`} className="back-link">
+                    ← Back to Workout
                 </Link>
-                <h1>Create New Workout</h1>
+                <h1>Edit Workout</h1>
             </header>
 
             <form onSubmit={handleSubmit(onSubmit)} className="create-workout-form">
@@ -228,7 +326,7 @@ const CreateWorkoutPage = () => {
                     </div>
 
                     <div className="exercises-section">
-                        <h2>Exercises</h2>
+                        <h2>Add More Exercises</h2>
 
                         <div className="exercise-selector">
                             <div className="filter-controls">
@@ -407,6 +505,7 @@ const CreateWorkoutPage = () => {
                                                                                             : undefined
                                                                                     )
                                                                                 }
+                                                                                value={field.value || ''}
                                                                             />
                                                                         )}
                                                                     />
@@ -433,6 +532,7 @@ const CreateWorkoutPage = () => {
                                                                                             : undefined
                                                                                     )
                                                                                 }
+                                                                                value={field.value || ''}
                                                                             />
                                                                         )}
                                                                     />
@@ -459,6 +559,7 @@ const CreateWorkoutPage = () => {
                                                                                             : undefined
                                                                                     )
                                                                                 }
+                                                                                value={field.value || ''}
                                                                             />
                                                                         )}
                                                                     />
@@ -486,6 +587,7 @@ const CreateWorkoutPage = () => {
                                                                                             : undefined
                                                                                     )
                                                                                 }
+                                                                                value={field.value || ''}
                                                                             />
                                                                         )}
                                                                     />
@@ -499,6 +601,7 @@ const CreateWorkoutPage = () => {
                                                                                 {...field}
                                                                                 type="text"
                                                                                 placeholder="Notes"
+                                                                                value={field.value || ''}
                                                                             />
                                                                         )}
                                                                     />
@@ -544,11 +647,11 @@ const CreateWorkoutPage = () => {
                 )}
 
                 <div className="form-actions">
-                    <Link to="/workouts" className="cancel-btn">
+                    <Link to={`/workouts/${id}`} className="cancel-btn">
                         Cancel
                     </Link>
-                    <button type="submit" className="submit-btn" disabled={isCreating}>
-                        {isCreating ? 'Creating...' : 'Create Workout'}
+                    <button type="submit" className="submit-btn" disabled={isUpdating}>
+                        {isUpdating ? 'Saving...' : 'Save Changes'}
                     </button>
                 </div>
             </form>
@@ -556,4 +659,4 @@ const CreateWorkoutPage = () => {
     );
 };
 
-export default CreateWorkoutPage;
+export default EditWorkoutPage;

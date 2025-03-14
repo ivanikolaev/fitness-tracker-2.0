@@ -19,6 +19,7 @@ import DashboardPage from './pages/dashboard/DashboardPage.tsx';
 import WorkoutsPage from './pages/workouts/WorkoutsPage';
 import WorkoutDetailPage from './pages/workouts/WorkoutDetailPage';
 import CreateWorkoutPage from './pages/workouts/CreateWorkoutPage';
+import EditWorkoutPage from './pages/workouts/EditWorkoutPage';
 import ExercisesPage from './pages/exercises/ExercisesPage';
 import ProfilePage from './pages/profile/ProfilePage';
 import NotFoundPage from './pages/NotFoundPage.tsx';
@@ -77,6 +78,7 @@ function App() {
                             <Route path="workouts" element={<WorkoutsPage />} />
                             <Route path="workouts/new" element={<CreateWorkoutPage />} />
                             <Route path="workouts/:id" element={<WorkoutDetailPage />} />
+                            <Route path="workouts/:id/edit" element={<EditWorkoutPage />} />
 
                             {/* Exercise routes */}
                             <Route path="exercises" element={<ExercisesPage />} />

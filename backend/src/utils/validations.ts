@@ -30,6 +30,13 @@ export const refreshTokenSchema = z.object({
     refreshToken: z.string(),
 });
 
+// For password change, we'll handle the confirmation match in the controller
+export const changePasswordSchema = z.object({
+    currentPassword: z.string(),
+    newPassword: z.string().min(8).max(100),
+    confirmPassword: z.string(),
+});
+
 // Exercise validation schemas
 export const createExerciseSchema = z.object({
     name: z.string().min(2).max(100),
@@ -49,11 +56,66 @@ export const createWorkoutSchema = z.object({
     description: z.string().optional(),
     scheduledDate: z
         .string()
-        .datetime()
-        .transform(val => new Date(val)),
+        .transform(val => {
+            try {
+                return new Date(val);
+            } catch (error) {
+                throw new Error('Invalid date format');
+            }
+        }),
+    workoutExercises: z.array(
+        z.object({
+            exerciseId: z.string().uuid(),
+            order: z.number().int().nonnegative(),
+            notes: z.string().optional(),
+            sets: z.array(
+                z.object({
+                    setNumber: z.number().int().positive(),
+                    weight: z.number().positive().optional(),
+                    reps: z.number().int().positive().optional(),
+                    duration: z.number().int().positive().optional(),
+                    distance: z.number().positive().optional(),
+                    notes: z.string().optional(),
+                })
+            ).optional(),
+        })
+    ).optional(),
 });
 
-export const updateWorkoutSchema = createWorkoutSchema.partial();
+export const updateWorkoutSchema = z.object({
+    // Editable fields
+    name: z.string().min(2).max(100).optional(),
+    description: z.string().optional().nullable(),
+    scheduledDate: z
+        .string()
+        .transform(val => {
+            try {
+                return new Date(val);
+            } catch (error) {
+                throw new Error('Invalid date format');
+            }
+        })
+        .optional(),
+    workoutExercises: z.array(
+        z.object({
+            id: z.string().uuid().optional(), // Existing workout exercise ID
+            exerciseId: z.string().uuid().optional(),
+            order: z.number().int().nonnegative().optional(),
+            notes: z.string().optional().nullable(),
+            sets: z.array(
+                z.object({
+                    id: z.string().uuid().optional(), // Existing set ID
+                    setNumber: z.number().int().optional(),
+                    weight: z.number().optional().nullable(),
+                    reps: z.number().int().optional().nullable(),
+                    duration: z.number().int().optional().nullable(),
+                    distance: z.number().optional().nullable(),
+                    notes: z.string().optional().nullable(),
+                }).partial() // Make all set properties optional
+            ).optional(),
+        }).partial() // Make all workout exercise properties optional
+    ).optional(),
+}).passthrough(); // Allow additional properties
 
 // WorkoutExercise validation schemas
 export const createWorkoutExerciseSchema = z.object({

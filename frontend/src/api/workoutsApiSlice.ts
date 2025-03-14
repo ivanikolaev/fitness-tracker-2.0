@@ -96,11 +96,26 @@ interface CreateWorkoutRequest {
 
 interface UpdateWorkoutRequest {
     name?: string;
-    description?: string;
+    description?: string | null;
     scheduledDate?: string;
-    completedDate?: string;
+    completedDate?: string | null;
     isCompleted?: boolean;
     duration?: number;
+    workoutExercises?: {
+        id?: string;
+        exerciseId?: string;
+        order?: number;
+        notes?: string | null;
+        sets?: {
+            id?: string;
+            setNumber?: number;
+            weight?: number | null;
+            reps?: number | null;
+            duration?: number | null;
+            distance?: number | null;
+            notes?: string | null;
+        }[];
+    }[];
 }
 
 interface GetWorkoutsRequest {
@@ -176,6 +191,16 @@ export const workoutsApiSlice = apiSlice.injectEndpoints({
                 { type: 'Workout', id: 'LIST' },
             ],
         }),
+        reopenWorkout: builder.mutation<WorkoutResponse, string>({
+            query: id => ({
+                url: `/workouts/${id}/reopen`,
+                method: 'PATCH',
+            }),
+            invalidatesTags: (result, error, id) => [
+                { type: 'Workout', id },
+                { type: 'Workout', id: 'LIST' },
+            ],
+        }),
     }),
 });
 
@@ -187,4 +212,5 @@ export const {
     useUpdateWorkoutMutation,
     useDeleteWorkoutMutation,
     useCompleteWorkoutMutation,
+    useReopenWorkoutMutation,
 } = workoutsApiSlice;

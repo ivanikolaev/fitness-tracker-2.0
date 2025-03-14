@@ -11,7 +11,8 @@
         "migration:generate": "npm run typeorm migration:generate -- -d src/data-source.ts",
         "migration:run": "npm run typeorm migration:run -- -d src/data-source.ts",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "format": "prettier --write \"src/**/*.{ts,js}\" \"*.json\""
+        "format": "prettier --write \"src/**/*.{ts,js}\" \"*.json\"",
+        "seed:exercises": "ts-node src/scripts/seedExercises.ts"
     },
     "keywords": [
         "fitness",

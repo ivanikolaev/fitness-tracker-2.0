@@ -13,6 +13,9 @@ const baseQuery = fetchBaseQuery({
             headers.set('authorization', `Bearer ${token}`);
         }
 
+        // Always set Content-Type header to application/json
+        headers.set('Content-Type', 'application/json');
+
         return headers;
     },
     credentials: 'include', // This allows the browser to send cookies with the request
