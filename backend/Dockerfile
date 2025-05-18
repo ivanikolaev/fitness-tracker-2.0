@@ -1,26 +1,18 @@
-# Use Node.js 20 as the base image
-FROM node:20-alpine
+# Базовый образ Node.js
+FROM node:20-alpine as base
 
-# Set working directory
+# Рабочая директория
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Стадия разработки
+FROM base as development
+# Копирование всего проекта
 COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy source code
+# Установка зависимостей для разработки
+RUN npm ci
 COPY . .
 
-# Build TypeScript code
-RUN npm run build
-
-# Expose port
+# Открытие порта, который будет использоваться приложением
 EXPOSE 3001
-
-# Set environment variables
-ENV NODE_ENV=production
-
-# Run the application
-CMD ["node", "dist/index.js"]
+# Запуск в режиме разработки
+CMD ["npm", "run", "dev"]

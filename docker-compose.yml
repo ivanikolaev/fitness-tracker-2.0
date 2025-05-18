@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # PostgreSQL Database
   postgres:
-    image: postgres:15-alpine
+    image: postgres:16-alpine
     container_name: fitness-tracker-postgres
     restart: unless-stopped
     environment:
@@ -31,6 +31,9 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    volumes:
+      - ./backend:/app  # Добавьте том для разработки
+      - /app/node_modules  # Исключите node_modules для повышения производительности
     environment:
       NODE_ENV: ${NODE_ENV:-development}
       PORT: ${PORT:-3001}
@@ -54,10 +57,13 @@ services:
       dockerfile: Dockerfile
     container_name: fitness-tracker-frontend
     restart: unless-stopped
+    volumes:
+      - ./frontend:/app  # Добавьте том для разработки
+      - /app/node_modules  # Исключите node_modules для повышения производительности
     depends_on:
       - backend
     ports:
-      - "80:80"
+      - "5173:5173"
 
 volumes:
   postgres_data:

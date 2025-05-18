@@ -1,32 +1,21 @@
-# Use Node.js 20 as the base image
-FROM node:20-alpine as build
+# Базовый образ Node.js
+FROM node:20-alpine as base
 
-# Set working directory
+# Установка рабочей директории
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Копирование файлов package.json и package-lock.json
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Этап установки зависимостей
+FROM base as dependencies
+RUN npm ci
 
-# Copy source code
+# Этап разработки
+FROM dependencies as development
+# Копирование всего кода проекта
 COPY . .
-
-# Build the application
-RUN npm run build
-
-# Use Nginx to serve the static files
-FROM nginx:alpine
-
-# Copy the build output to replace the default nginx contents
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Copy custom nginx config if needed
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose port
-EXPOSE 80
-
-# Start Nginx server
-CMD ["nginx", "-g", "daemon off;"]
+# Expose порт для Vite dev server
+EXPOSE 5173
+# Запуск в режиме разработки
+CMD ["npm", "run", "dev"]
