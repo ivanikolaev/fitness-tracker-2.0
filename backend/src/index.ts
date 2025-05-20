@@ -9,6 +9,7 @@ import authRoutes from './routes/authRoutes';
 import exerciseRoutes from './routes/exerciseRoutes';
 import workoutRoutes from './routes/workoutRoutes';
 import userRoutes from './routes/userRoutes';
+import adminRoutes from './routes/adminRoutes';
 
 // Load environment variables
 config();
@@ -46,6 +47,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/exercises', exerciseRoutes);
 app.use('/api/workouts', workoutRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Error handling middleware
 app.use(errorHandler);

@@ -22,6 +22,8 @@ import CreateWorkoutPage from './pages/workouts/CreateWorkoutPage';
 import EditWorkoutPage from './pages/workouts/EditWorkoutPage';
 import ExercisesPage from './pages/exercises/ExercisesPage';
 import ProfilePage from './pages/profile/ProfilePage';
+import AdminPage from './pages/admin/AdminPage';
+import ClientsPage from './pages/clients/ClientsPage';
 import NotFoundPage from './pages/NotFoundPage.tsx';
 
 function App() {
@@ -85,6 +87,12 @@ function App() {
 
                             {/* Profile route */}
                             <Route path="profile" element={<ProfilePage />} />
+
+                            {/* Admin routes */}
+                            <Route path="admin" element={<AdminPage />} />
+                            
+                            {/* Clients route (for trainers and admins) */}
+                            <Route path="clients" element={<ClientsPage />} />
                         </Route>
 
                         {/* 404 route */}
